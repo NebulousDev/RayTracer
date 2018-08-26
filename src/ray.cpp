@@ -112,9 +112,9 @@ internal void freeCanvas(Canvas* pCanvas)
 // Fills a Canvas with an rgba32 color
 internal void fillCanvas(Canvas* pCanvas, const rgba32 color)
 {
-    for(uint32 y = 0; y < pCanvas->height; ++y)
-        for(uint32 x = 0; x < pCanvas->width; ++x)
-            pCanvas->pPixels[x + y * pCanvas->width] = color;
+    rgba32* pixel = pCanvas->pPixels;
+    rgba32* last = pCanvas->pPixels + pCanvas->width * pCanvas->height;
+    for( ; pixel != last; ++pixel) *pixel = color;
 }
 
 int main(int argc, char const** argv)
