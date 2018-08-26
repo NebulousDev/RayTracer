@@ -1,59 +1,34 @@
 #include <stdio.h>
 #include <malloc.h>
+#include "common.h"
+#include "canvas.h"
+#include "bitmap.h"
 
 #define WIDTH   1280
 #define HEIGHT  720
 
-#define internal static
-
-/* Typedefs */
-typedef unsigned char       uint8;
-typedef unsigned short      uint16;
-typedef unsigned int        uint32;
-typedef unsigned long int   uint64;
-typedef uint32              rgba32;
-
-// Stores an array of rgba32 pixels
-struct Canvas
+// Initializes a Canvas
+// Allocates width * height pixels
+internal void initCanvas(Canvas* pCanvas, const uint32 width, const uint32 height)
 {
-    rgba32*     pPixels;
-    uint32      width;
-    uint32      height;
-};
+    pCanvas->pPixels = (rgba32*)malloc(width * height * sizeof(rgba32));
+    pCanvas->width = width;
+    pCanvas->height = height;
+}
 
-// File header for the Bitmap filetype
-#pragma pack(push, 1)
-struct BitmapHeader
+// Frees the allocated pixels of a Canvas
+internal void freeCanvas(Canvas* pCanvas)
 {
-    uint16  type;           //  2 bytes     File type (0x4D42 "BM")
-    uint32  filesize;       //  4 bytes     Size of full file
-    uint16  reserved1;      //  2 bytes     Not used
-    uint16  reserved2;      //  2 bytes     Not used
-    uint32  offset;         //  4 bytes     Header offset size (14)
-    uint32  size;           //  4 bytes     Size of BMP header
-    uint32  width;          //  4 bytes     Image width
-    uint32  height;         //  4 bytes     Image height
-    uint16  planes;         //  2 bytes     Idk, set to 1
-    uint16  bits;           //  2 bytes     Number of bits per pixel
-    uint32  compression;    //  4 bytes     Compression type (0 = Bi_RGB)
-    uint32  bitmapSize;     //  4 bytes     Number of pixels
-    uint32  horizontal;     //  4 bytes     Not used
-    uint32  vertical;       //  4 bytes     Not used
-    uint32  colors;         //  4 bytes     Not used
-    uint32  important;      //  4 bytes     Not used
-    //uint32  redMask;      //  4 bytes     0xFF000000
-    //uint32  greenMask;    //  4 bytes     0x00FF0000
-    //uint32  blueMask;     //  4 bytes     0x0000FF00
-};
-#pragma pack(pop)
+    free(pCanvas->pPixels);
+}
 
-// Bitmap file header and data
-struct Bitmap
+// Fills a Canvas with an rgba32 color
+internal void fillCanvas(Canvas* pCanvas, const rgba32 color)
 {
-    BitmapHeader    header;
-    rgba32*         pData;
-    uint32          dataSize;
-};
+    rgba32* pixel = pCanvas->pPixels;
+    rgba32* last = pCanvas->pPixels + pCanvas->width * pCanvas->height;
+    for( ; pixel != last; ++pixel) *pixel = color;
+}
 
 // Writes a Canvas to a Bitmap format
 internal void writeBitmap(Bitmap* pBitmap, const Canvas* pCanvas)
@@ -92,29 +67,6 @@ internal bool saveBitmap(const Bitmap* pBitmap, const char* filepath)
     fclose(file);
     
     return true;
-}
-
-// Initializes a Canvas
-// Allocates width * height pixels
-internal void initCanvas(Canvas* pCanvas, const uint32 width, const uint32 height)
-{
-    pCanvas->pPixels = (rgba32*)malloc(width * height * sizeof(rgba32));
-    pCanvas->width = width;
-    pCanvas->height = height;
-}
-
-// Frees the allocated pixels of a Canvas
-internal void freeCanvas(Canvas* pCanvas)
-{
-    free(pCanvas->pPixels);
-}
-
-// Fills a Canvas with an rgba32 color
-internal void fillCanvas(Canvas* pCanvas, const rgba32 color)
-{
-    rgba32* pixel = pCanvas->pPixels;
-    rgba32* last = pCanvas->pPixels + pCanvas->width * pCanvas->height;
-    for( ; pixel != last; ++pixel) *pixel = color;
 }
 
 int main(int argc, char const** argv)
