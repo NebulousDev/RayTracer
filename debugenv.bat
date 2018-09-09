@@ -2,7 +2,7 @@
 
 :: Setup Environemnt
 if not defined DevEnvDir (
-    pushd "B:\Program Files (x86)\Microsoft Visual Studio 14.0\VC"
+    pushd "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC"
     call vcvarsall.bat
     popd
 )

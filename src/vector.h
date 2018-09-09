@@ -1,13 +1,6 @@
 #pragma once
 #include "common.h"
-#include <math.h>
-
-/* Defines */
-
-#define PI32 3.14159265358979323846f
-#define PI64 3.141592653589793238462643383279502884L
-#define TAO32 (PI32 * 2.0f)
-#define TAO64 (PI64 * 2.0L)
+#include "math.h"
 
 // Two element vector
 template<typename T>
@@ -76,15 +69,15 @@ struct Ray3
 
 /* Typedefs */
 
-typedef Vec3<int32>     Vec2i;
+typedef Vec2<int32>     Vec2i;
 typedef Vec3<int32>     Vec3i;
 typedef Vec4<int32>     Vec4i;
 
-typedef Vec3<uint32>    Vec2u;
+typedef Vec2<uint32>    Vec2u;
 typedef Vec3<uint32>    Vec3u;
 typedef Vec4<uint32>    Vec4u;
 
-typedef Vec3<float32>   Vec2f;
+typedef Vec2<float32>   Vec2f;
 typedef Vec3<float32>   Vec3f;
 typedef Vec4<float32>   Vec4f;
 
@@ -361,14 +354,14 @@ inline float32 lengthSquared(const Vec3<T> v)
 template<typename T>
 inline float32 length(const Vec3<T> v)
 {
-    return sqrtf(lengthSquared(v));
+    return sqrtf32(lengthSquared(v));
 }
 
 template<typename T>
 inline Vec3<T> normalize(const Vec3<T> v)
 {
     float32 len = lengthSquared(v);
-    if(len > 0.00001f) return v * (1.0f / sqrtf(len));
+    if(len > 0.00001f) return v * (1.0f / sqrtf32(len));
     else return Vec3<T> {};
 }
 
